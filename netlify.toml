@@ -1,10 +1,10 @@
 [build]
   publish = "./"
-  functions = "public/netlify/functions"
+  functions = "netlify/functions"
 
 [dev]
   publish = "./"
-  functions = "public/netlify/functions"
+  functions = "netlify/functions"
   
 [functions]
   node_bundler = "esbuild"
