@@ -1,0 +1,13 @@
+[build]
+  publish = "./"
+  functions = "public/netlify/functions"
+
+[dev]
+  publish = "./"
+  functions = "public/netlify/functions"
+  
+[functions]
+  node_bundler = "esbuild"
+
+[build.environment]
+  NODE_VERSION = "18"
