@@ -1,15 +1,14 @@
 {
   "name": "bysunling.com",
   "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
     "start": "netlify dev",
     "build": "netlify build"
   },
   "keywords": [],
-  "author": "",
+  "author": "Ling Sun",
   "license": "ISC",
-  "description": "",
+  "description": "孙玲的站点",
   "dependencies": {
     "@supabase/supabase-js": "^2.50.0",
     "bcryptjs": "^2.4.3",

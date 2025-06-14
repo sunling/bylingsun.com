@@ -1,0 +1,548 @@
+/* 共享样式文件 - 适用于所有子域名 */
+
+/* 重置样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* 共享Header样式 */
+.shared-header {
+    background: linear-gradient(135deg, 
+        rgba(255, 107, 107, 0.15) 0%, 
+        rgba(254, 202, 87, 0.15) 20%, 
+        rgba(72, 219, 251, 0.15) 40%, 
+        rgba(255, 159, 243, 0.15) 60%, 
+        rgba(84, 160, 255, 0.15) 80%, 
+        rgba(95, 39, 205, 0.15) 100%);
+    padding: 4px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    position: relative;
+    z-index: 1000;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 20px;
+}
+
+/* 左侧区域 */
+.header-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar {
+    font-size: 2rem;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-5px); }
+    60% { transform: translateY(-3px); }
+}
+
+.shared-header .logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #1a202c;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-shadow: none;
+    transition: all 0.3s ease;
+    gap: 8px;
+}
+
+.shared-header .logo:hover {
+    transform: scale(1.05);
+    color: #1a202c;
+}
+
+.site-name {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.slogan {
+    font-size: 0.85rem;
+    color: #4a5568;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    opacity: 0.9;
+}
+
+/* 中间导航区域 */
+.header-nav {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #1d1d1f;
+    padding: 8px 12px;
+    font-weight: 400;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: #0071e3;
+    text-decoration: none;
+}
+
+/* 右侧区域 */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: auto;
+}
+
+.about-link {
+    text-decoration: none;
+    color: #1d1d1f;
+    padding: 8px 12px;
+    font-weight: 400;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+    position: relative;
+}
+
+.about-link:hover {
+    color: #0071e3;
+    text-decoration: none;
+}
+
+.auth-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.login-link,
+.shared-header .auth-section a {
+    text-decoration: none;
+    color: #4a5568;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.login-link:hover,
+.shared-header .auth-section a:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
+
+.shared-header .user-info {
+    color: #4a5568;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+}
+
+.shared-header .logout-btn {
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #4a5568;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.shared-header .logout-btn:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
+
+/* 共享Footer样式 */
+.shared-footer {
+    background: linear-gradient(135deg, 
+        rgba(95, 39, 205, 0.15) 0%, 
+        rgba(84, 160, 255, 0.15) 20%, 
+        rgba(255, 159, 243, 0.15) 40%, 
+        rgba(72, 219, 251, 0.15) 60%, 
+        rgba(254, 202, 87, 0.15) 80%, 
+        rgba(255, 107, 107, 0.15) 100%);
+    padding: 4px 20px;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+    margin-top: auto;
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: #1a202c;
+    text-shadow: none;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+/* Footer左侧 - 个性签名 */
+.footer-left {
+    flex: 1;
+    text-align: left;
+}
+
+.signature {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1a202c;
+    text-shadow: none;
+    animation: glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from { opacity: 0.8; }
+    to { opacity: 1; }
+}
+
+/* Footer中间 - 友情链接 */
+.footer-center {
+    flex: 2;
+    text-align: center;
+}
+
+.friends-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.friends-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #4a5568;
+    white-space: nowrap;
+}
+
+.friends-links {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.friend-link {
+    text-decoration: none;
+    color: #4a5568;
+    padding: 3px 8px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+.friend-link:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    color: #1a202c;
+}
+
+/* Footer右侧 - 版权信息 */
+.footer-right {
+    flex: 1;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 0.75rem;
+    color: #4a5568;
+}
+
+.copyright {
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.contact a {
+    color: #4a5568;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.contact a:hover {
+    color: #2d3748;
+    text-decoration: underline;
+}
+
+.stats {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .shared-header {
+        padding: 3px 15px;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    .header-left {
+        align-items: center;
+        text-align: center;
+    }
+    
+    .logo-container {
+        justify-content: center;
+    }
+    
+    .avatar {
+        font-size: 1.5rem;
+    }
+    
+    .shared-header .logo {
+        font-size: 1.1rem;
+    }
+    
+    .slogan {
+        font-size: 0.8rem;
+        text-align: center;
+    }
+    
+    .header-nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .nav-link {
+        padding: 6px 10px;
+        font-size: 0.85rem;
+    }
+    
+    .header-right {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    .about-link {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+    
+    .auth-section {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .login-link,
+    .shared-header .auth-section a,
+    .shared-header .logout-btn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+    
+    .shared-footer {
+        padding: 3px 15px;
+    }
+    
+    .footer-content {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+    
+    .footer-left,
+    .footer-center,
+    .footer-right {
+        flex: none;
+        text-align: center;
+    }
+    
+    .signature {
+        font-size: 0.8rem;
+    }
+    
+    .friends-container {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .friends-links {
+        gap: 6px;
+        justify-content: center;
+    }
+    
+    .friend-link {
+        padding: 2px 6px;
+        font-size: 0.7rem;
+    }
+    
+    .footer-right {
+        gap: 1px;
+        font-size: 0.7rem;
+    }
+    
+    .copyright {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-nav {
+        display: none;
+    }
+    
+    .header-content {
+        gap: 10px;
+    }
+    
+    .shared-header .logo {
+        font-size: 1rem;
+    }
+    
+    .slogan {
+        font-size: 0.75rem;
+    }
+    
+    .friends-links {
+        flex-direction: column;
+        gap: 4px;
+        align-items: center;
+    }
+    
+    .footer-right {
+        font-size: 0.65rem;
+    }
+    
+    .copyright {
+        font-size: 0.7rem;
+    }
+}
+
+/* 主页特定样式 */
+.home-body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.home-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.sites-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.site-card {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+.site-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.site-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.site-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.site-description {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.site-url {
+    color: #667eea;
+    font-size: 0.8rem;
+    margin-top: 10px;
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .site-card {
+        padding: 20px;
+    }
+    
+    .site-icon {
+        font-size: 2.5rem;
+    }
+}
