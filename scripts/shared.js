@@ -55,13 +55,78 @@ const envConfig = new EnvironmentConfig();
 // 认证相关函数
 class AuthManager {
     constructor() {
-        this.token = localStorage.getItem('authToken');
+        // 优先从Cookie获取认证信息
+        this.token = this.getCookie('authToken') || localStorage.getItem('authToken');
         this.user = this.getUser();
+        
+        // 同步数据到Cookie和localStorage
+        this.syncAuthData();
+    }
+
+    // Cookie 操作函数
+    setCookie(name, value, days = 7) {
+        const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toUTCString();
+        const isLocalDev = window.location.hostname === 'localhost' || 
+                          window.location.hostname === '127.0.0.1' ||
+                          window.location.hostname.startsWith('192.168.') ||
+                          window.location.hostname.startsWith('10.') ||
+                          window.location.hostname.endsWith('.local');
+        
+        if (isLocalDev) {
+            // 本地开发环境不设置domain
+            document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; samesite=lax`;
+        } else {
+            // 生产环境设置跨子域名的Cookie
+            document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; domain=.bysunling.com; path=/; secure; samesite=lax`;
+        }
+    }
+
+    getCookie(name) {
+        const nameEQ = name + "=";
+        const ca = document.cookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) {
+                return decodeURIComponent(c.substring(nameEQ.length, c.length));
+            }
+        }
+        return null;
+    }
+
+    deleteCookie(name) {
+        const isLocalDev = window.location.hostname === 'localhost' || 
+                          window.location.hostname === '127.0.0.1' ||
+                          window.location.hostname.startsWith('192.168.') ||
+                          window.location.hostname.startsWith('10.') ||
+                          window.location.hostname.endsWith('.local');
+        
+        if (isLocalDev) {
+            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+        } else {
+            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=.bysunling.com; path=/;`;
+        }
+    }
+
+    // 同步认证数据到Cookie和localStorage
+    syncAuthData() {
+        if (this.token) {
+            this.setCookie('authToken', this.token);
+            localStorage.setItem('authToken', this.token);
+        }
+        if (this.user) {
+            this.setCookie('user', JSON.stringify(this.user));
+            localStorage.setItem('user', JSON.stringify(this.user));
+        }
     }
 
     // 获取用户信息
     getUser() {
-        const userStr = localStorage.getItem('user');
+        // 优先从Cookie获取
+        let userStr = this.getCookie('user');
+        if (!userStr) {
+            userStr = localStorage.getItem('user');
+        }
         return userStr ? JSON.parse(userStr) : null;
     }
 
@@ -74,14 +139,13 @@ class AuthManager {
     async login(email, password) {
         try {
             // 始终使用主域名的API
-            const apiUrl = `${envConfig.baseUrl}/.netlify/functions/authHandler`;
+            const apiUrl = `${envConfig.baseUrl}/.netlify/functions/login`;
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    action: 'login',
                     email,
                     password
                 })
@@ -93,7 +157,9 @@ class AuthManager {
                 this.token = data.token;
                 this.user = data.user;
                 
-                // 保存到localStorage，支持跨子域名访问
+                // 保存到Cookie（支持跨子域名）和localStorage
+                this.setCookie('authToken', data.token);
+                this.setCookie('user', JSON.stringify(data.user));
                 localStorage.setItem('authToken', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
                 
@@ -113,14 +179,13 @@ class AuthManager {
     // 注册
     async register(name, username, email, password) {
         try {
-            const apiUrl = envConfig.getResourceUrl('/.netlify/functions/authHandler');
+            const apiUrl = envConfig.getResourceUrl('/.netlify/functions/register');
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    action: 'register',
                     name,
                     username,
                     email,
@@ -145,6 +210,12 @@ class AuthManager {
     logout() {
         this.token = null;
         this.user = null;
+        
+        // 清除Cookie
+        this.deleteCookie('authToken');
+        this.deleteCookie('user');
+        
+        // 清除localStorage
         localStorage.removeItem('authToken');
         localStorage.removeItem('user');
         
@@ -195,7 +266,7 @@ class AuthManager {
             } else {
                 // 未登录状态
                 const loginLink = document.createElement('a');
-                loginLink.href = envConfig.getResourceUrl('/auth.html');
+                loginLink.href = envConfig.getResourceUrl('/auth');
                 loginLink.innerHTML = '登录';
                 loginLink.className = 'login-link';
                 
@@ -295,7 +366,7 @@ function createSharedHeader() {
     } else {
         // 未登录状态
         const loginLink = document.createElement('a');
-        loginLink.href = envConfig.getResourceUrl('/auth.html');
+        loginLink.href = envConfig.getResourceUrl('/auth');
         loginLink.innerHTML = '登录';
         loginLink.className = 'login-link';
         

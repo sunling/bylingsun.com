@@ -5,8 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>用户登录 / 注册</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter&family=Playfair+Display&family=Montserrat&family=Lato&family=Dancing+Script&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC&family=Noto+Serif+SC&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter&family=Playfair+Display&family=Montserrat&family=Lato&family=Dancing+Script&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC&family=Noto+Serif+SC&display=swap"
+        rel="stylesheet">
     <style>
         * {
             -webkit-font-smoothing: antialiased;
@@ -358,13 +361,15 @@
 
                     <div class="form-group">
                         <label for="register-password">密码</label>
-                        <input type="password" id="register-password" name="password" placeholder="请输入密码（至少6位）" required minlength="6">
+                        <input type="password" id="register-password" name="password" placeholder="请输入密码（至少6位）" required
+                            minlength="6">
                         <div class="error-message" id="register-password-error"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="register-confirm-password">确认密码</label>
-                        <input type="password" id="register-confirm-password" name="confirmPassword" placeholder="请再次输入密码" required>
+                        <input type="password" id="register-confirm-password" name="confirmPassword"
+                            placeholder="请再次输入密码" required>
                         <div class="error-message" id="register-confirm-password-error"></div>
                     </div>
 
@@ -382,7 +387,7 @@
             </div>
 
             <div class="back-home">
-                <a href="index.html">← 返回首页</a>
+                <a href="index">← 返回首页</a>
             </div>
         </div>
     </div>
@@ -392,7 +397,7 @@
         function switchTab(tab, event) {
             // 更新标签状态
             document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-            
+
             // 如果有event对象，使用event.target，否则根据tab参数找到对应的标签
             if (event && event.target) {
                 event.target.classList.add('active');
@@ -431,53 +436,53 @@
             }
         }
 
+        // 使用全局的 crossDomainAuth 实例进行认证操作
+
         // 在auth.html的<script>标签中，替换现有的handleLogin和handleRegister函数
-        
+
         // 处理登录
         async function handleLogin(event) {
             event.preventDefault();
             clearErrors();
-        
+
             const formData = new FormData(event.target);
             const email = formData.get('email');
             const password = formData.get('password');
-        
+
             // 基本验证
             if (!email) {
                 showError('login-email', '请输入邮箱地址');
                 return;
             }
-        
+
             if (!password) {
                 showError('login-password', '请输入密码');
                 return;
             }
-        
+
             const button = event.target.querySelector('.auth-button');
             const originalText = button.textContent;
             button.textContent = '登录中...';
             button.disabled = true;
-        
+
             try {
-                const response = await fetch('/.netlify/functions/authHandler', {
+                const response = await fetch('/.netlify/functions/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        action: 'login',
                         email,
                         password
                     })
                 });
-        
+
                 const data = await response.json();
-        
+
                 if (response.ok) {
-                    // 保存token到localStorage
-                    localStorage.setItem('authToken', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    
+                    // 使用 crossDomainAuth 保存认证信息
+                    window.crossDomainAuth.saveAuth(data.token, data.user);
+
                     // 优先使用redirect参数进行跳转
                     if (redirectUrl) {
                         // 验证redirect URL的安全性（只允许同域名或子域名）
@@ -485,13 +490,13 @@
                             const redirectUrlObj = new URL(redirectUrl);
                             const currentHostname = window.location.hostname;
                             const redirectHostname = redirectUrlObj.hostname;
-                            
+
                             // 检查是否为安全的跳转目标
-                            const isSafeDomain = redirectHostname === 'bysunling.com' || 
-                                               redirectHostname.endsWith('.bysunling.com') ||
-                                               (currentHostname === 'localhost' && redirectHostname === 'localhost') ||
-                                               (currentHostname === '127.0.0.1' && redirectHostname === '127.0.0.1');
-                            
+                            const isSafeDomain = redirectHostname === 'bysunling.com' ||
+                                redirectHostname.endsWith('.bysunling.com') ||
+                                (currentHostname === 'localhost' && redirectHostname === 'localhost') ||
+                                (currentHostname === '127.0.0.1' && redirectHostname === '127.0.0.1');
+
                             if (isSafeDomain) {
                                 window.location.href = redirectUrl;
                                 return;
@@ -500,23 +505,23 @@
                             console.warn('Invalid redirect URL:', redirectUrl);
                         }
                     }
-                    
+
                     // 如果没有有效的redirect参数，使用智能跳转逻辑
                     const hostname = window.location.hostname;
-                    const isLocalDev = hostname === 'localhost' || hostname === '127.0.0.1' || 
-                                      hostname.startsWith('192.168.') || hostname.startsWith('10.') || 
-                                      hostname.endsWith('.local');
-                    
+                    const isLocalDev = hostname === 'localhost' || hostname === '127.0.0.1' ||
+                        hostname.startsWith('192.168.') || hostname.startsWith('10.') ||
+                        hostname.endsWith('.local');
+
                     if (isLocalDev || hostname === 'bysunling.com') {
                         // 在主域名或本地开发环境，跳转到当前域名的首页
-                        window.location.href = 'index.html?login=success';
+                        window.location.href = 'index?login=success';
                     } else if (hostname.endsWith('.bysunling.com')) {
                         // 在子域名，跳转回子域名的首页（如果存在）或主域名
                         // 先尝试跳转到子域名首页，如果不存在则跳转到主域名
-                        window.location.href = '/index.html?login=success';
+                        window.location.href = '/index?login=success';
                     } else {
                         // 其他情况，跳转到主域名
-                        window.location.href = 'https://bysunling.com/index.html?login=success';
+                        window.location.href = 'https://bysunling.com/index?login=success';
                     }
                 } else {
                     showError('login-password', data.error || '登录失败');
@@ -529,82 +534,81 @@
                 button.disabled = false;
             }
         }
-        
+
         // 处理注册
         async function handleRegister(event) {
             event.preventDefault();
             clearErrors();
-        
+
             const formData = new FormData(event.target);
             const name = formData.get('name');
             const username = formData.get('username');
             const email = formData.get('email');
             const password = formData.get('password');
             const confirmPassword = formData.get('confirmPassword');
-        
+
             // 基本验证
             if (!name) {
                 showError('register-name', '请输入姓名或昵称');
                 return;
             }
-        
+
             if (name.length < 1) {
                 showError('register-name', '姓名或昵称不能为空');
                 return;
             }
-        
+
             if (!username) {
                 showError('register-username', '请输入用户名');
                 return;
             }
-        
+
             if (username.length < 2) {
                 showError('register-username', '用户名至少需要2个字符');
                 return;
             }
-        
+
             if (!email) {
                 showError('register-email', '请输入邮箱地址');
                 return;
             }
-        
+
             if (!password) {
                 showError('register-password', '请输入密码');
                 return;
             }
-        
+
             if (password.length < 6) {
                 showError('register-password', '密码至少需要6个字符');
                 return;
             }
-        
+
             if (password !== confirmPassword) {
                 showError('register-confirm-password', '两次输入的密码不一致');
                 return;
             }
-        
+
             const button = event.target.querySelector('.auth-button');
             const originalText = button.textContent;
             button.textContent = '注册中...';
             button.disabled = true;
-        
+
             try {
-                const response = await fetch('/.netlify/functions/authHandler', {
+                const response = await fetch('/.netlify/functions/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        action: 'register',
                         name,
                         username,
                         email,
                         password
                     })
                 });
-        
+
                 const data = await response.json();
-        
+
                 if (response.ok) {
                     alert('注册成功！请登录您的账户。');
                     // 切换到登录标签
@@ -633,39 +637,40 @@
                 button.disabled = false;
             }
         }
-        
+
         // 添加一个检查登录状态的函数
         function checkAuthStatus() {
-            const token = localStorage.getItem('authToken');
-            const user = localStorage.getItem('user');
+            // 使用 crossDomainAuth 检查认证状态
+            const token = window.crossDomainAuth.getToken();
+            const user = window.crossDomainAuth.getUser();
             
             if (token && user) {
-                // 可以验证token是否仍然有效
-                return JSON.parse(user);
+                return { token, user };
             }
+            
             return null;
         }
-        
+
         // 添加一个退出登录的函数
         function logout() {
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('user');
-            
+            // 使用 crossDomainAuth 清除认证信息
+            window.crossDomainAuth.clearAuth();
+
             // 智能跳转逻辑：根据当前域名决定跳转目标
             const hostname = window.location.hostname;
-            const isLocalDev = hostname === 'localhost' || hostname === '127.0.0.1' || 
-                              hostname.startsWith('192.168.') || hostname.startsWith('10.') || 
-                              hostname.endsWith('.local');
-            
+            const isLocalDev = hostname === 'localhost' || hostname === '127.0.0.1' ||
+                hostname.startsWith('192.168.') || hostname.startsWith('10.') ||
+                hostname.endsWith('.local');
+
             if (isLocalDev || hostname === 'bysunling.com') {
                 // 在主域名或本地开发环境，跳转到当前域名的登录页
                 window.location.href = 'auth.html';
             } else if (hostname.endsWith('.bysunling.com')) {
                 // 在子域名，跳转到主域名的登录页
-                window.location.href = 'https://bysunling.com/auth.html';
+                window.location.href = 'https://bysunling.com/auth';
             } else {
                 // 其他情况，跳转到主域名的登录页
-                window.location.href = 'https://bysunling.com/auth.html';
+                window.location.href = 'https://bysunling.com/auth';
             }
         }
 
@@ -686,15 +691,15 @@
 
         // 全局变量存储redirect参数
         let redirectUrl = null;
-        
+
         // 页面加载完成后的初始化
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // 检查URL参数
             const urlParams = new URLSearchParams(window.location.search);
-            
+
             // 获取redirect参数
             redirectUrl = urlParams.get('redirect');
-            
+
             // 如果有tab参数则切换到对应标签
             const tab = urlParams.get('tab');
             if (tab === 'register') {
@@ -702,6 +707,9 @@
             }
         });
     </script>
+    
+    <!-- 引入跨域认证工具库 -->
+    <script src="scripts/auth-utils.js"></script>
 </body>
 
 </html>
