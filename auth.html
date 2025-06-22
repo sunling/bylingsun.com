@@ -478,7 +478,30 @@
                     localStorage.setItem('authToken', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
                     
-                    // 智能跳转逻辑：根据当前域名决定跳转目标
+                    // 优先使用redirect参数进行跳转
+                    if (redirectUrl) {
+                        // 验证redirect URL的安全性（只允许同域名或子域名）
+                        try {
+                            const redirectUrlObj = new URL(redirectUrl);
+                            const currentHostname = window.location.hostname;
+                            const redirectHostname = redirectUrlObj.hostname;
+                            
+                            // 检查是否为安全的跳转目标
+                            const isSafeDomain = redirectHostname === 'bysunling.com' || 
+                                               redirectHostname.endsWith('.bysunling.com') ||
+                                               (currentHostname === 'localhost' && redirectHostname === 'localhost') ||
+                                               (currentHostname === '127.0.0.1' && redirectHostname === '127.0.0.1');
+                            
+                            if (isSafeDomain) {
+                                window.location.href = redirectUrl;
+                                return;
+                            }
+                        } catch (e) {
+                            console.warn('Invalid redirect URL:', redirectUrl);
+                        }
+                    }
+                    
+                    // 如果没有有效的redirect参数，使用智能跳转逻辑
                     const hostname = window.location.hostname;
                     const isLocalDev = hostname === 'localhost' || hostname === '127.0.0.1' || 
                                       hostname.startsWith('192.168.') || hostname.startsWith('10.') || 
@@ -661,10 +684,18 @@
             alert(`${platform === 'wechat' ? '微信' : 'QQ'}登录功能开发中...`);
         }
 
+        // 全局变量存储redirect参数
+        let redirectUrl = null;
+        
         // 页面加载完成后的初始化
         document.addEventListener('DOMContentLoaded', function() {
-            // 检查URL参数，如果有tab参数则切换到对应标签
+            // 检查URL参数
             const urlParams = new URLSearchParams(window.location.search);
+            
+            // 获取redirect参数
+            redirectUrl = urlParams.get('redirect');
+            
+            // 如果有tab参数则切换到对应标签
             const tab = urlParams.get('tab');
             if (tab === 'register') {
                 switchTab('register');
