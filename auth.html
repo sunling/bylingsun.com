@@ -477,8 +477,24 @@
                     // 保存token到localStorage
                     localStorage.setItem('authToken', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
-                    // 跳转到主页，添加登录成功参数
-                    window.location.href = 'index.html?login=success';
+                    
+                    // 智能跳转逻辑：根据当前域名决定跳转目标
+                    const hostname = window.location.hostname;
+                    const isLocalDev = hostname === 'localhost' || hostname === '127.0.0.1' || 
+                                      hostname.startsWith('192.168.') || hostname.startsWith('10.') || 
+                                      hostname.endsWith('.local');
+                    
+                    if (isLocalDev || hostname === 'bysunling.com') {
+                        // 在主域名或本地开发环境，跳转到当前域名的首页
+                        window.location.href = 'index.html?login=success';
+                    } else if (hostname.endsWith('.bysunling.com')) {
+                        // 在子域名，跳转回子域名的首页（如果存在）或主域名
+                        // 先尝试跳转到子域名首页，如果不存在则跳转到主域名
+                        window.location.href = '/index.html?login=success';
+                    } else {
+                        // 其他情况，跳转到主域名
+                        window.location.href = 'https://bysunling.com/index.html?login=success';
+                    }
                 } else {
                     showError('login-password', data.error || '登录失败');
                 }
@@ -611,7 +627,23 @@
         function logout() {
             localStorage.removeItem('authToken');
             localStorage.removeItem('user');
-            window.location.href = 'auth.html';
+            
+            // 智能跳转逻辑：根据当前域名决定跳转目标
+            const hostname = window.location.hostname;
+            const isLocalDev = hostname === 'localhost' || hostname === '127.0.0.1' || 
+                              hostname.startsWith('192.168.') || hostname.startsWith('10.') || 
+                              hostname.endsWith('.local');
+            
+            if (isLocalDev || hostname === 'bysunling.com') {
+                // 在主域名或本地开发环境，跳转到当前域名的登录页
+                window.location.href = 'auth.html';
+            } else if (hostname.endsWith('.bysunling.com')) {
+                // 在子域名，跳转到主域名的登录页
+                window.location.href = 'https://bysunling.com/auth.html';
+            } else {
+                // 其他情况，跳转到主域名的登录页
+                window.location.href = 'https://bysunling.com/auth.html';
+            }
         }
 
         // 忘记密码
