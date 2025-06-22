@@ -23,9 +23,20 @@ class EnvironmentConfig {
             // 本地开发环境使用相对路径
             return window.location.origin;
         } else {
-            // 生产环境使用主域名
+            // 生产环境使用主域名 - 静态header模式
             return 'https://bysunling.com';
         }
+    }
+    
+    // 获取当前域名信息
+    getCurrentDomain() {
+        return window.location.hostname;
+    }
+    
+    // 检查是否为子域名
+    isSubdomain() {
+        const hostname = this.getCurrentDomain();
+        return !this.isLocalDev && hostname !== 'bysunling.com' && hostname.endsWith('.bysunling.com');
     }
 
     // 获取资源URL
@@ -59,10 +70,11 @@ class AuthManager {
         return !!(this.token && this.user);
     }
 
-    // 登录
+    // 登录 - 支持跨子域名
     async login(email, password) {
         try {
-            const apiUrl = envConfig.getResourceUrl('/.netlify/functions/authHandler');
+            // 始终使用主域名的API
+            const apiUrl = `${envConfig.baseUrl}/.netlify/functions/authHandler`;
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
@@ -80,8 +92,14 @@ class AuthManager {
             if (response.ok) {
                 this.token = data.token;
                 this.user = data.user;
+                
+                // 保存到localStorage，支持跨子域名访问
                 localStorage.setItem('authToken', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
+                
+                // 触发认证状态更新
+                this.broadcastAuthChange();
+                
                 return { success: true, user: data.user };
             } else {
                 return { success: false, error: data.error || '登录失败' };
@@ -123,18 +141,66 @@ class AuthManager {
         }
     }
 
-    // 退出登录
+    // 退出登录 - 支持跨子域名
     logout() {
         this.token = null;
         this.user = null;
         localStorage.removeItem('authToken');
         localStorage.removeItem('user');
         
+        // 触发认证状态更新
+        this.broadcastAuthChange();
+        
+        // 更新当前页面的UI
+        this.updateAuthUI();
+        
         // 如果在主域名，跳转到首页，否则跳转到主域名
         if (window.location.hostname === 'bysunling.com' || envConfig.isLocalDev) {
             window.location.href = '/index.html';
         } else {
             window.location.href = envConfig.baseUrl;
+        }
+    }
+    
+    // 广播认证状态变化（用于跨标签页同步）
+    broadcastAuthChange() {
+        // 触发storage事件，通知其他标签页
+        window.dispatchEvent(new StorageEvent('storage', {
+            key: 'authToken',
+            newValue: this.token,
+            url: window.location.href
+        }));
+    }
+    
+    // 更新认证UI
+    updateAuthUI() {
+        const authSection = document.querySelector('.auth-section');
+        if (authSection) {
+            // 清空现有内容
+            authSection.innerHTML = '';
+            
+            if (this.isLoggedIn()) {
+                // 已登录状态
+                const userInfo = document.createElement('span');
+                userInfo.className = 'user-info';
+                userInfo.innerHTML = `${this.user.name || this.user.username}`;
+                
+                const logoutBtn = document.createElement('button');
+                logoutBtn.className = 'logout-btn';
+                logoutBtn.innerHTML = '退出';
+                logoutBtn.onclick = () => this.logout();
+                
+                authSection.appendChild(userInfo);
+                authSection.appendChild(logoutBtn);
+            } else {
+                // 未登录状态
+                const loginLink = document.createElement('a');
+                loginLink.href = envConfig.getResourceUrl('/auth.html');
+                loginLink.innerHTML = '登录';
+                loginLink.className = 'login-link';
+                
+                authSection.appendChild(loginLink);
+            }
         }
     }
 }
@@ -161,12 +227,12 @@ function createSharedHeader() {
     
     const avatar = document.createElement('div');
     avatar.className = 'avatar';
-    avatar.textContent = '🧑‍💻';
+    avatar.textContent = 'LS';
     
     const logo = document.createElement('a');
     logo.href = envConfig.isLocalDev ? '/' : envConfig.baseUrl;
     logo.className = 'logo';
-    logo.innerHTML = '🌟 <span class="site-name">bysunling.com</span>';
+    logo.innerHTML = '<span class="site-name">bysunling.com</span>';
     
     logoContainer.appendChild(avatar);
     logoContainer.appendChild(logo);
@@ -174,7 +240,7 @@ function createSharedHeader() {
     // Slogan
     const slogan = document.createElement('div');
     slogan.className = 'slogan';
-    slogan.innerHTML = '✨ 记录、分享、慢慢生长 🌱';
+    slogan.innerHTML = '记录、分享、慢慢生长';
     
     leftSection.appendChild(logoContainer);
     leftSection.appendChild(slogan);
@@ -184,17 +250,17 @@ function createSharedHeader() {
     navSection.className = 'header-nav';
     
     const navItems = [
-        { text: '📝 博客', url: 'https://blog.bysunling.com', emoji: '📚' },
-        { text: '🎴 卡片', url: 'https://cards.bysunling.com', emoji: '💫' },
-        { text: '🎉 活动', url: 'https://meetup.bysunling.com', emoji: '🎊' },
-        { text: '🛠️ 工具', url: 'https://tools.bysunling.com', emoji: '⚡' }
+        { text: '博客', url: 'https://blog.bysunling.com' },
+        { text: '卡片', url: 'https://cards.bysunling.com' },
+        { text: '活动', url: 'https://meetup.bysunling.com' },
+        { text: '工具', url: 'https://tools.bysunling.com' }
     ];
     
     navItems.forEach(item => {
         const navLink = document.createElement('a');
         navLink.href = item.url;
         navLink.className = 'nav-link';
-        navLink.innerHTML = `${item.emoji} ${item.text.split(' ')[1]}`;
+        navLink.innerHTML = item.text;
         navLink.title = item.text;
         navSection.appendChild(navLink);
     });
@@ -207,7 +273,7 @@ function createSharedHeader() {
     const aboutLink = document.createElement('a');
     aboutLink.href = envConfig.getResourceUrl('/about.html');
     aboutLink.className = 'about-link';
-    aboutLink.innerHTML = '🙋‍♂️ 关于我';
+    aboutLink.innerHTML = '关于我';
     
     // 认证区域
     const authSection = document.createElement('div');
@@ -217,11 +283,11 @@ function createSharedHeader() {
         // 已登录状态
         const userInfo = document.createElement('span');
         userInfo.className = 'user-info';
-        userInfo.innerHTML = `👋 ${authManager.user.name || authManager.user.username}`;
+        userInfo.innerHTML = `${authManager.user.name || authManager.user.username}`;
         
         const logoutBtn = document.createElement('button');
         logoutBtn.className = 'logout-btn';
-        logoutBtn.innerHTML = '👋 退出';
+        logoutBtn.innerHTML = '退出';
         logoutBtn.onclick = () => authManager.logout();
         
         authSection.appendChild(userInfo);
@@ -230,7 +296,7 @@ function createSharedHeader() {
         // 未登录状态
         const loginLink = document.createElement('a');
         loginLink.href = envConfig.getResourceUrl('/auth.html');
-        loginLink.innerHTML = '🔐 登录/注册';
+        loginLink.innerHTML = '登录';
         loginLink.className = 'login-link';
         
         authSection.appendChild(loginLink);
@@ -263,7 +329,7 @@ function createSharedFooter() {
     
     const signature = document.createElement('div');
     signature.className = 'signature';
-    signature.innerHTML = '💫 做喜欢的事，认识有趣的人 ✨';
+    signature.innerHTML = '做喜欢的事，认识有趣的人';
     
     leftSection.appendChild(signature);
     
@@ -348,6 +414,40 @@ if (document.readyState === 'loading') {
 } else {
     initSharedComponents();
 }
+
+// 全局函数：更新认证状态（供dynamic-loader.js调用）
+window.updateAuthStatus = function() {
+    if (window.authManager) {
+        // 重新读取localStorage中的认证信息
+        const token = localStorage.getItem('authToken');
+        const userStr = localStorage.getItem('user');
+        
+        if (token && userStr) {
+            window.authManager.token = token;
+            window.authManager.user = JSON.parse(userStr);
+        } else {
+            window.authManager.token = null;
+            window.authManager.user = null;
+        }
+        
+        // 更新UI
+        window.authManager.updateAuthUI();
+    }
+};
+
+// 全局函数：更新认证UI（供dynamic-loader.js调用）
+window.updateAuthUI = function() {
+    if (window.authManager) {
+        window.authManager.updateAuthUI();
+    }
+};
+
+// 监听localStorage变化，实现跨标签页认证状态同步
+window.addEventListener('storage', function(e) {
+    if (e.key === 'authToken' || e.key === 'user') {
+        window.updateAuthStatus();
+    }
+});
 
 // 导出供其他脚本使用
 if (typeof module !== 'undefined' && module.exports) {
