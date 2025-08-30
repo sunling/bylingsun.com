@@ -390,28 +390,37 @@ def parse_json_safely(text):
 
 
 def call_openrouter(model, title, full_content):
-    # APE-optimized prompt with clear structure and examples
+    # Updated prompt for smart tagging system
     prompt_content = f"""
-# TASK: Deep Content Analysis & Insight Extraction
+# TASK: Intelligent Content Analysis & Value-Based Tagging
 
-You are an expert content analyst specializing in extracting meaningful insights from articles. Your goal is to provide thoughtful, nuanced analysis that goes beyond surface-level summarization.
+You are an expert content analyst specializing in extracting meaningful insights and generating intelligent tags based on content value and user discoverability.
 
 ## ANALYSIS FRAMEWORK:
 
-### 1. COMPREHENSION DEPTH
-- Identify core arguments and supporting evidence
-- Uncover implicit assumptions and underlying logic
-- Connect ideas to broader contexts and implications
+### 1. CONTENT VALUE IDENTIFICATION
+- Assess information novelty and uniqueness
+- Evaluate practical applicability and actionability
+- Identify thought leadership and expert insights
+- Determine educational and learning value
 
-### 2. CRITICAL EVALUATION
-- Assess argument strength and evidence quality
-- Identify potential biases or limitations
-- Consider alternative perspectives
+### 2. USER INTENT PREDICTION
+- Consider what users would search for to find this content
+- Identify the primary problems this content solves
+- Determine the target audience and their needs
+- Predict discovery patterns and search behaviors
 
-### 3. INSIGHT SYNTHESIS
-- Extract actionable insights and key takeaways
-- Highlight novel or counterintuitive findings
-- Connect to current trends and future implications
+### 3. THREE-LAYER TAG GENERATION
+- Layer 1 (Value Type): Identify user reading intent (learn/solve/inspire/update/analyze/guide)
+- Layer 2 (Domain Theme): Determine content domain and thematic focus
+- Layer 3 (Feature Tags): Add 1-3 descriptive characteristics (actionable, advanced, etc.)
+- Ensure hierarchical consistency and user discoverability across all layers
+
+## TAG STRATEGY:
+
+**Layer 1 - Value Types (用户意图):** learn, solve, inspire, update, analyze, guide
+**Layer 2 - Domain Themes (领域主题):** ai-research, ai-product, startup-strategy, startup-funding, tech-trends, programming, cybersecurity, business-model, marketing, leadership, science, medicine, psychology, politics, economics, society, lifestyle, education, design
+**Layer 3 - Feature Tags (内容特征):** actionable, beginner-friendly, advanced, controversial, data-driven, future-focused, problem-solving, case-study, tutorial, expert-insight
 
 ## OUTPUT SPECIFICATION:
 
@@ -424,26 +433,27 @@ Return a JSON object with exactly these fields:
   "summary_zh": "150-200 character Chinese analysis that reads like thoughtful commentary, not mere summary. Include personal reflection and broader significance.",
   "best_quote_en": "Most insightful English quote from article (translate if originally Chinese)",
   "best_quote_zh": "Most insightful Chinese quote from article (translate if originally English)",
-  "tags": ["English", "keywords"],
-  "tags_zh": ["中文", "关键词"]
+  "tags": ["value-based", "discoverable", "English", "tags"],
+  "tags_zh": ["基于价值", "可发现的", "中文", "标签"]
 }}
 ```
 
-## QUALITY STANDARDS:
+## TAGGING QUALITY STANDARDS:
 
 ✅ **DO:**
-- Write with intellectual depth and personal voice
-- Focus on "why this matters" over "what happened"
-- Use precise, impactful language
-- Connect ideas to larger themes
-- Show genuine engagement with the content
+- Apply the three-layer tag hierarchy: Value Type + Domain Theme + Feature Tags
+- Layer 1: Identify user intent (learn/solve/inspire/update/analyze/guide)
+- Layer 2: Determine domain theme based on content focus
+- Layer 3: Add 1-3 feature tags that describe content characteristics
+- Ensure tags reflect actual content value and user discoverability
+- Generate 3-6 high-quality tags per language following the hierarchy
 
 ❌ **AVOID:**
-- Generic, templated language
-- Mere content summarization
-- Redundant or filler words
-- Mixing languages in tag arrays
-- Code blocks or extra formatting
+- Mixing tags from different layers without clear hierarchy
+- Generic topic tags without value context
+- Overly specific tags that limit discoverability
+- Redundant tags within the same layer
+- More than 6 tags per language or ignoring the three-layer structure
 
 ## INPUT:
 

@@ -5,6 +5,13 @@
 # Node modules
 node_modules/
 
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
 # Trae related hidden files
 .trae/
 .trae-*
