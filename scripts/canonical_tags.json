@@ -1,0 +1,264 @@
+{
+  "tags": {
+    "ai": {
+      "en": "AI",
+      "zh": "人工智能",
+      "category": "technology",
+      "aliases": ["artificial-intelligence", "machine-learning", "ml", "deep-learning", "neural-networks"]
+    },
+    "openai": {
+      "en": "OpenAI",
+      "zh": "OpenAI",
+      "category": "company",
+      "aliases": ["open-ai", "chatgpt", "gpt"]
+    },
+    "google": {
+      "en": "Google",
+      "zh": "谷歌",
+      "category": "company",
+      "aliases": ["alphabet", "gmail", "android"]
+    },
+    "apple": {
+      "en": "Apple",
+      "zh": "苹果",
+      "category": "company",
+      "aliases": ["iphone", "ios", "mac", "macbook"]
+    },
+    "microsoft": {
+      "en": "Microsoft",
+      "zh": "微软",
+      "category": "company",
+      "aliases": ["windows", "azure", "office"]
+    },
+    "technology": {
+      "en": "Technology",
+      "zh": "科技",
+      "category": "general",
+      "aliases": ["tech", "innovation", "digital"]
+    },
+    "business": {
+      "en": "Business",
+      "zh": "商业",
+      "category": "general",
+      "aliases": ["entrepreneurship", "startup", "enterprise"]
+    },
+    "startups": {
+      "en": "Startups",
+      "zh": "创业公司",
+      "category": "business",
+      "aliases": ["startup", "entrepreneurship", "venture"]
+    },
+    "programming": {
+      "en": "Programming",
+      "zh": "编程",
+      "category": "technology",
+      "aliases": ["coding", "development", "software"]
+    },
+    "python": {
+      "en": "Python",
+      "zh": "Python",
+      "category": "programming",
+      "aliases": ["django", "flask", "pandas"]
+    },
+    "javascript": {
+      "en": "JavaScript",
+      "zh": "JavaScript",
+      "category": "programming",
+      "aliases": ["js", "node", "react", "vue"]
+    },
+    "web-development": {
+      "en": "Web Development",
+      "zh": "网页开发",
+      "category": "programming",
+      "aliases": ["frontend", "backend", "fullstack"]
+    },
+    "data-science": {
+      "en": "Data Science",
+      "zh": "数据科学",
+      "category": "technology",
+      "aliases": ["analytics", "big-data", "statistics"]
+    },
+    "blockchain": {
+      "en": "Blockchain",
+      "zh": "区块链",
+      "category": "technology",
+      "aliases": ["crypto", "bitcoin", "ethereum", "web3"]
+    },
+    "cybersecurity": {
+      "en": "Cybersecurity",
+      "zh": "网络安全",
+      "category": "technology",
+      "aliases": ["security", "privacy", "hacking"]
+    },
+    "cloud-computing": {
+      "en": "Cloud Computing",
+      "zh": "云计算",
+      "category": "technology",
+      "aliases": ["aws", "azure", "gcp", "saas"]
+    },
+    "mobile": {
+      "en": "Mobile",
+      "zh": "移动端",
+      "category": "technology",
+      "aliases": ["ios", "android", "app"]
+    },
+    "design": {
+      "en": "Design",
+      "zh": "设计",
+      "category": "creative",
+      "aliases": ["ui", "ux", "graphic-design"]
+    },
+    "productivity": {
+      "en": "Productivity",
+      "zh": "生产力",
+      "category": "lifestyle",
+      "aliases": ["efficiency", "tools", "workflow"]
+    },
+    "finance": {
+      "en": "Finance",
+      "zh": "金融",
+      "category": "business",
+      "aliases": ["fintech", "investment", "banking"]
+    },
+    "healthcare": {
+      "en": "Healthcare",
+      "zh": "医疗健康",
+      "category": "industry",
+      "aliases": ["medical", "health", "biotech"]
+    },
+    "education": {
+      "en": "Education",
+      "zh": "教育",
+      "category": "industry",
+      "aliases": ["learning", "edtech", "online-courses"]
+    },
+    "climate": {
+      "en": "Climate",
+      "zh": "气候",
+      "category": "environment",
+      "aliases": ["environment", "sustainability", "green-tech"]
+    },
+    "space": {
+      "en": "Space",
+      "zh": "太空",
+      "category": "science",
+      "aliases": ["aerospace", "spacex", "nasa"]
+    },
+    "science": {
+      "en": "Science",
+      "zh": "科学",
+      "category": "general",
+      "aliases": ["research", "innovation", "discovery"]
+    },
+    "policy": {
+      "en": "Policy",
+      "zh": "政策",
+      "category": "government",
+      "aliases": ["regulation", "government", "law"]
+    },
+    "economics": {
+      "en": "Economics",
+      "zh": "经济学",
+      "category": "business",
+      "aliases": ["economy", "market", "trade"]
+    },
+    "social-media": {
+      "en": "Social Media",
+      "zh": "社交媒体",
+      "category": "technology",
+      "aliases": ["twitter", "facebook", "instagram", "tiktok"]
+    },
+    "gaming": {
+      "en": "Gaming",
+      "zh": "游戏",
+      "category": "entertainment",
+      "aliases": ["video-games", "esports", "game-development"]
+    },
+    "media": {
+      "en": "Media",
+      "zh": "媒体",
+      "category": "industry",
+      "aliases": ["journalism", "news", "publishing"]
+    },
+    "transportation": {
+      "en": "Transportation",
+      "zh": "交通运输",
+      "category": "industry",
+      "aliases": ["automotive", "electric-vehicles", "tesla"]
+    },
+    "philosophy": {
+      "en": "Philosophy",
+      "zh": "哲学",
+      "category": "humanities",
+      "aliases": ["ethics", "logic", "metaphysics"]
+    },
+    "psychology": {
+      "en": "Psychology",
+      "zh": "心理学", 
+      "category": "social-science",
+      "aliases": ["cognitive-science", "behavioral-science"]
+    }
+  },
+  "categories": {
+    "technology": {
+      "en": "Technology",
+      "zh": "科技",
+      "parent": null
+    },
+    "business": {
+      "en": "Business",
+      "zh": "商业",
+      "parent": null
+    },
+    "science": {
+      "en": "Science",
+      "zh": "科学",
+      "parent": null
+    },
+    "general": {
+      "en": "General",
+      "zh": "通用",
+      "parent": null
+    },
+    "company": {
+      "en": "Company",
+      "zh": "公司",
+      "parent": "business"
+    },
+    "programming": {
+      "en": "Programming",
+      "zh": "编程",
+      "parent": "technology"
+    },
+    "industry": {
+      "en": "Industry",
+      "zh": "行业",
+      "parent": "business"
+    },
+    "creative": {
+      "en": "Creative",
+      "zh": "创意",
+      "parent": "general"
+    },
+    "lifestyle": {
+      "en": "Lifestyle",
+      "zh": "生活方式",
+      "parent": "general"
+    },
+    "environment": {
+      "en": "Environment",
+      "zh": "环境",
+      "parent": "science"
+    },
+    "government": {
+      "en": "Government",
+      "zh": "政府",
+      "parent": "general"
+    },
+    "entertainment": {
+      "en": "Entertainment",
+      "zh": "娱乐",
+      "parent": "general"
+    }
+  }
+}
